@@ -3,18 +3,85 @@
   "id": "samay",
   "name": "Samay",
   "updated": "2026-11-19T04:30Z",
-  "avatar": { "hair": "#1d1722", "skin": "#a06a44", "shirt": "#1b1b24", "trousers": "#242b46" },
+  "avatar": {
+    "hair": "#1d1722",
+    "skin": "#a06a44",
+    "shirt": "#1b1b24",
+    "trousers": "#242b46"
+  },
   "sanctum": "beach",
-  "hunter": { "rank": "D", "title": "Rising", "level": 13, "xp": 1202, "stats": { "STR": 17, "INT": 44, "SENSE": 11, "GOLD": 19, "CHA": 28 } },
+  "hunter": {
+    "rank": "D",
+    "title": "Rising",
+    "level": 13,
+    "xp": 1202,
+    "stats": {
+      "STR": 17,
+      "INT": 44,
+      "SENSE": 11,
+      "GOLD": 19,
+      "CHA": 28
+    }
+  },
   "shadows": [
-    { "id": "scribe", "name": "The Night Scribe", "glyph": "🌙", "tier": "Elite", "days": 88 },
-    { "id": "striker", "name": "The Striker", "glyph": "⚽", "tier": "Knight", "days": 16 },
-    { "id": "reader", "name": "The Reader", "glyph": "📖", "tier": "Soldier", "days": 11 }
+    {
+      "id": "scribe",
+      "name": "The Night Scribe",
+      "glyph": "🌙",
+      "tier": "Elite",
+      "days": 88
+    },
+    {
+      "id": "striker",
+      "name": "The Striker",
+      "glyph": "⚽",
+      "tier": "Knight",
+      "days": 16
+    },
+    {
+      "id": "reader",
+      "name": "The Reader",
+      "glyph": "📖",
+      "tier": "Soldier",
+      "days": 11
+    }
   ],
-  "gate": { "name": "E-Rank Gate: The Circuit Gate", "path": "AI", "status": "open", "done": 1, "total": 3, "cleared": 1 },
-  "week": { "days": 7, "questsCleared": 21, "xp": 310, "byTrack": { "craft": 5, "money": 3, "body": 4, "mind": 5, "social": 4 } },
-  "now": ["DEMO: drafting the methods section", "DEMO: first dive-shop outreach this week"],
+  "gate": {
+    "name": "E-Rank Gate: The Circuit Gate",
+    "path": "AI",
+    "status": "open",
+    "done": 1,
+    "total": 3,
+    "cleared": 1
+  },
+  "week": {
+    "days": 7,
+    "questsCleared": 21,
+    "xp": 310,
+    "byTrack": {
+      "craft": 5,
+      "money": 3,
+      "body": 4,
+      "mind": 5,
+      "social": 4
+    }
+  },
+  "now": [
+    "DEMO: drafting the methods section",
+    "DEMO: first dive-shop outreach this week"
+  ],
   "asks": [
-    { "date": "2026-11-18", "status": "open", "text": "DEMO: anyone know a clean way to join messy R tables?" }
+    {
+      "date": "2026-11-18",
+      "status": "open",
+      "text": "DEMO: anyone know a clean way to join messy R tables?"
+    }
+  ],
+  "lanterns": [
+    {
+      "date": "2026-11-19",
+      "to": "nishank",
+      "text": "DEMO: saw a chai-stall photo today and thought of you"
+    }
   ]
 }

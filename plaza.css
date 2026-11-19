@@ -64,3 +64,8 @@ code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.9em;
   .side { position: static; width: 100%; pointer-events: auto; }
   .card { position: static; max-width: none; width: 100%; margin-top: 10px; max-height: none; }
 }
+
+.letter { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(420px, 86%); padding: 16px 18px 18px; border-radius: 14px; background: rgba(28,16,10,0.95); border: 1px solid rgba(255,170,70,0.65); box-shadow: 0 0 40px rgba(255,150,60,0.25); font-size: 14px; line-height: 1.5; z-index: 3; }
+.letter .l-head { position: relative; padding-right: 26px; font-size: 12px; color: #ffd9a8; }
+.letter .l-head b { font-weight: 600; } .letter .l-sub { color: #c4a47e; }
+.letter .l-text { margin: 10px 0 0; font-size: 16px; color: #fff3df; }

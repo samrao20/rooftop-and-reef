@@ -3,18 +3,82 @@
   "id": "nishank",
   "name": "Nishank",
   "updated": "2026-11-19T09:10Z",
-  "avatar": { "hair": "#14110f", "skin": "#b07a50", "shirt": "#26334d", "trousers": "#2a2a33" },
+  "avatar": {
+    "hair": "#14110f",
+    "skin": "#b07a50",
+    "shirt": "#26334d",
+    "trousers": "#2a2a33"
+  },
   "sanctum": "rooftop",
-  "hunter": { "rank": "E", "title": "Awakened", "level": 4, "xp": 372, "stats": { "STR": 9, "INT": 31, "SENSE": 6, "GOLD": 12, "CHA": 14 } },
+  "hunter": {
+    "rank": "E",
+    "title": "Awakened",
+    "level": 4,
+    "xp": 372,
+    "stats": {
+      "STR": 9,
+      "INT": 31,
+      "SENSE": 6,
+      "GOLD": 12,
+      "CHA": 14
+    }
+  },
   "shadows": [
-    { "id": "walker", "name": "The Walker", "glyph": "👣", "tier": "Soldier", "days": 12 },
-    { "id": "reader", "name": "The Reader", "glyph": "📖", "tier": "Soldier", "days": 10 }
+    {
+      "id": "walker",
+      "name": "The Walker",
+      "glyph": "👣",
+      "tier": "Soldier",
+      "days": 12
+    },
+    {
+      "id": "reader",
+      "name": "The Reader",
+      "glyph": "📖",
+      "tier": "Soldier",
+      "days": 10
+    }
   ],
-  "gate": { "name": "E-Rank Gate: The Iron Gate", "path": "Fitness", "status": "open", "done": 2, "total": 3, "cleared": 0 },
-  "week": { "days": 7, "questsCleared": 14, "xp": 205, "byTrack": { "craft": 6, "money": 1, "body": 3, "mind": 2, "social": 2 } },
-  "now": ["DEMO: testing an agent that drafts campaign captions"],
+  "gate": {
+    "name": "E-Rank Gate: The Iron Gate",
+    "path": "Fitness",
+    "status": "open",
+    "done": 2,
+    "total": 3,
+    "cleared": 0
+  },
+  "week": {
+    "days": 7,
+    "questsCleared": 14,
+    "xp": 205,
+    "byTrack": {
+      "craft": 6,
+      "money": 1,
+      "body": 3,
+      "mind": 2,
+      "social": 2
+    }
+  },
+  "now": [
+    "DEMO: testing an agent that drafts campaign captions"
+  ],
   "asks": [
-    { "date": "2026-11-19", "status": "open", "text": "DEMO: best way to score AI-generated product shots for brand safety?" },
-    { "date": "2026-11-17", "status": "open", "text": "DEMO: looking for a good simple Obsidian setup tip" }
+    {
+      "date": "2026-11-19",
+      "status": "open",
+      "text": "DEMO: best way to score AI-generated product shots for brand safety?"
+    },
+    {
+      "date": "2026-11-17",
+      "status": "open",
+      "text": "DEMO: looking for a good simple Obsidian setup tip"
+    }
+  ],
+  "lanterns": [
+    {
+      "date": "2026-11-19",
+      "to": "samay",
+      "text": "DEMO: monsoon is loud tonight. How is the beach?"
+    }
   ]
 }

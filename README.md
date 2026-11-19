@@ -4,7 +4,7 @@ A tiny pixel hangout for two friends, a beach in Townsville and a rooftop in Mum
 
 Each of us runs a personal quest-and-habit system (the "Command Center"). Each one can produce a small, **allow-listed** card about its owner: rank, stats, shadows, this week's gate, a short "working on" note and a help board. This site reads both cards and draws the plaza where our two characters stand.
 
-> Status: first slice built (the Seam, click-for-card, notice board, working on). It runs on two fake demo cards until real ones are added. Nothing here is published to the web yet. The repo is private on purpose until we have both read exactly what our cards say.
+> Status: first slice built (the Seam, click-for-card, notice board, working on) plus Lantern post (one-line notes that drift across a friend's half). It runs on two fake demo cards until real ones are added. Nothing here is published to the web yet. The repo is private on purpose until we have both read exactly what our cards say.
 
 ## How it works
 1. Each person's Command Center has a **Share** page that previews the exact card and saves it to a file, `card.json`. Nothing is sent anywhere by that page.

@@ -218,6 +218,63 @@
     });
   }
 
+
+  // ---------- lanterns: one-line notes that drift across the OTHER person's half for a week ----------
+  const LANTERN_DAYS = 7;
+  const READ_KEY = 'rr-lanterns-read';
+  const readSet = (() => { try { return new Set(JSON.parse(localStorage.getItem(READ_KEY) || '[]')); } catch { return new Set(); } })();
+  const saveRead = () => { try { localStorage.setItem(READ_KEY, JSON.stringify([...readSet].slice(-200))); } catch { /* storage blocked */ } };
+  const todayISO = () => new Date().toLocaleDateString('en-CA');
+  const dayDiff = (a, b) => Math.round((Date.parse(b + 'T12:00:00') - Date.parse(a + 'T12:00:00')) / 86400000);
+  function lanternId(from, l) { let h = 0; for (const ch of from + l.date + l.text) h = (h * 31 + ch.charCodeAt(0)) >>> 0; return from + '-' + l.date + '-' + h.toString(36); }
+  function collectLanterns() {
+    S.lanterns = [];
+    const today = todayISO();
+    for (const from of S.people) {
+      for (const l of (from.card.lanterns || [])) {
+        if (!l || typeof l.text !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(String(l.date)) || typeof l.to !== 'string') continue;
+        const to = S.people.find(x => x.cfg.id === l.to.toLowerCase());
+        const age = dayDiff(l.date, today);
+        if (!to || to === from || age < 0 || age >= LANTERN_DAYS) continue;
+        S.lanterns.push({ id: lanternId(from.cfg.id, l), from, to, date: l.date, text: l.text.slice(0, 140), age, ph: rnd(0, 6.3), x0: rnd(0, 200), speed: rnd(4, 7) });
+      }
+    }
+    const perHalf = {};
+    for (const L of S.lanterns) { const k = L.to.cfg.side; L.slot = perHalf[k] = (perHalf[k] || 0) + 1; }
+  }
+  const LANTERN = ['..OOO..', '.ORRRO.', 'ORYYYRO', 'ORYYYRO', 'ORYYYRO', 'ORYYYRO', '.ORRRO.', '..OOO..'];
+  function lanternPos(L) {
+    const left = L.to.cfg.side === 'left', x0 = left ? 14 : SEAM + 14, w = SEAM - 28;
+    const x = x0 + ((L.x0 + (reduce ? 0 : S.t * L.speed)) % w), y = 30 + ((L.slot - 1) % 3) * 34 + Math.round(Math.sin(S.t * 0.7 + L.ph) * 4);
+    return { x: Math.round(x), y };
+  }
+  function drawLanterns(glowPass) {
+    for (const L of S.lanterns || []) {
+      const { x, y } = lanternPos(L), unread = !readSet.has(L.id), fade = 1 - clamp((L.age - 4) / 4, 0, 0.55);
+      if (glowPass) {
+        if (!unread) continue;
+        const g = ctx.createRadialGradient(x, y + 4, 1, x, y + 4, 26); g.addColorStop(0, `rgba(255,170,70,${0.38 * fade})`); g.addColorStop(1, 'rgba(255,170,70,0)'); ctx.fillStyle = g; ctx.fillRect(x - 26, y - 22, 52, 52);
+        continue;
+      }
+      ctx.globalAlpha = fade;
+      ctx.fillStyle = '#5a4a3a'; ctx.fillRect(x, y - 6, 1, 6);                                    // string
+      blit(LANTERN, unread ? { O: '#7a2a10', R: '#d9461a', Y: '#ffd27a' } : { O: '#3a2c26', R: '#7a5a46', Y: '#a88a6a' }, x - 3, y, {});
+      ctx.fillStyle = unread ? '#ffe9b0' : '#8a7a68'; ctx.fillRect(x - 1, y + 8, 3, 2);           // tassel
+      if (unread && !reduce && Math.sin(S.t * 3 + L.ph) > 0.9) { ctx.fillStyle = '#fff6c0'; ctx.fillRect(x + 5, y + 2, 1, 1); ctx.fillRect(x - 6, y + 5, 1, 1); }
+      ctx.globalAlpha = 1;
+      L.box = { x: x - 6, y: y - 6, w: 13, h: 20 };
+    }
+  }
+  const letter = document.getElementById('letter');
+  function openLetter(L) {
+    letter.replaceChildren();
+    const head = el('div', 'l-head'); head.append(el('b', '', `A lantern from ${L.from.card.name}`), el('span', 'l-sub', ` for ${L.to.card.name} · ${L.date}`));
+    const close = el('button', 'c-close', '×'); close.setAttribute('aria-label', 'Close'); close.onclick = closeLetter; head.append(close);
+    letter.append(head, el('p', 'l-text', L.text));
+    letter.hidden = false; readSet.add(L.id); saveRead();
+  }
+  function closeLetter() { letter.hidden = true; }
+
   // ---------- frame ----------
   function frame(ts) {
     requestAnimationFrame(frame);
@@ -233,6 +290,8 @@
     S.awake = awake(hl) && awake(hr);
     drawSeam(S.awake); drawBoard(S.hover === 'board');
     for (const p of S.people) { p.shadowBoxes = p.shadowBoxes || []; drawPerson(p); }
+    drawLanterns(false);
+    ctx.globalCompositeOperation = 'lighter'; drawLanterns(true); ctx.globalCompositeOperation = 'source-over';
     // soft vignette
     const v = ctx.createRadialGradient(W / 2, H / 2, H * 0.5, W / 2, H / 2, W * 0.62); v.addColorStop(0, 'rgba(0,0,0,0)'); v.addColorStop(1, 'rgba(0,0,0,0.3)'); ctx.fillStyle = v; ctx.fillRect(0, 0, W, H);
     updateHud(left, right, hl, hr);
@@ -248,11 +307,12 @@
     const parts = [];
     if (left) parts.push(`${left.cfg.city} ${fmt(hl)}${wx(left)}`);
     if (right) parts.push(`${right.cfg.city} ${fmt(hr)}${wx(right)}`);
-    hud.textContent = parts.join('   ·   ') + (S.awake ? '   ·   you are both awake' : '');
+    const unread = (S.lanterns || []).filter(L => !readSet.has(L.id));
+    hud.textContent = parts.join('   ·   ') + (S.awake ? '   ·   you are both awake' : '') + (unread.length ? `   ·   ${unread.length} lantern${unread.length === 1 ? '' : 's'} unread` : '');
     for (const p of S.people) {
       const b = p.bubble; if (!b) continue;
       b.style.left = (p.x / W * 100) + '%'; b.style.top = ((p.y - 36) / H * 100) + '%';
-      b.hidden = S.open !== null || !(p.card.now && p.card.now[0]);
+      b.hidden = S.open !== null || !letter.hidden || !(p.card.now && p.card.now[0]);
     }
   }
 
@@ -310,6 +370,7 @@
   function toLogical(ev) { const r = cv.getBoundingClientRect(); return { x: (ev.clientX - r.left) / r.width * W, y: (ev.clientY - r.top) / r.height * H }; }
   const inBox = (b, p) => b && p.x >= b.x && p.x <= b.x + b.w && p.y >= b.y && p.y <= b.y + b.h;
   function hit(p) {
+    for (const L of (S.lanterns || [])) if (inBox(L.box, p)) return { kind: 'lantern', L };
     for (const per of S.people) { for (const sb of (per.shadowBoxes || [])) if (inBox(sb, p)) return { kind: 'shadow', per, s: sb.s }; if (inBox(per.box, p)) return { kind: 'person', per }; }
     if (inBox(S.boardBox, p)) return { kind: 'board' };
     return null;
@@ -317,17 +378,18 @@
   cv.addEventListener('mousemove', (e) => { const h = hit(toLogical(e)); S.hover = h && h.kind === 'board' ? 'board' : null; cv.classList.toggle('pointer', !!h); });
   cv.addEventListener('click', (e) => {
     const h = hit(toLogical(e)); if (!h) { closeCard(); return; }
+    if (h.kind === 'lantern') { openLetter(h.L); return; }
     if (h.kind === 'board') document.getElementById('board').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
     else openCard(h.per, h.kind === 'shadow' ? h.s : null);
   });
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeCard(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closeCard(); closeLetter(); } });
 
   // ---------- start ----------
   (async function start() {
     let cfg; try { cfg = await loadJSON('config.json'); } catch { document.getElementById('hud').textContent = 'Could not load config.json'; return; }
     S.people = await loadPeople(cfg);
     if (!S.people.length) { document.getElementById('hud').textContent = 'No cards found yet.'; return; }
-    layoutPeople(); tickHours(); setInterval(tickHours, 20000);
+    layoutPeople(); collectLanterns(); tickHours(); setInterval(tickHours, 20000);
     const stage = document.getElementById('stage');
     for (const p of S.people) { const b = el('div', 'bubble ' + p.cfg.side, ''); b.textContent = (p.card.now && p.card.now[0]) ? String(p.card.now[0]).slice(0, 56) : ''; stage.append(b); p.bubble = b; }
     if (S.people.some(p => p.demo)) document.getElementById('demo').hidden = false;
