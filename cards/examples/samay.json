@@ -27,21 +27,21 @@
     {
       "id": "scribe",
       "name": "The Night Scribe",
-      "glyph": "🌙",
+      "glyph": "\ud83c\udf19",
       "tier": "Elite",
       "days": 88
     },
     {
       "id": "striker",
       "name": "The Striker",
-      "glyph": "⚽",
+      "glyph": "\u26bd",
       "tier": "Knight",
       "days": 16
     },
     {
       "id": "reader",
       "name": "The Reader",
-      "glyph": "📖",
+      "glyph": "\ud83d\udcd6",
       "tier": "Soldier",
       "days": 11
     }
@@ -65,6 +65,11 @@
       "mind": 5,
       "social": 4
     }
+  },
+  "today": {
+    "date": "2026-11-19",
+    "cleared": 4,
+    "of": 5
   },
   "now": [
     "DEMO: drafting the methods section",

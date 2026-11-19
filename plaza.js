@@ -275,6 +275,59 @@
   }
   function closeLetter() { letter.hidden = true; }
 
+  // ---------- pass the flame: each person's fire (beach campfire or rooftop diya) grows with today's cleared quests ----------
+  // A card only says "n of 5 today" and a date. When both friends have cleared 3+ on the SAME day the two fires link with a trail of sparks;
+  // when both clear all five the flames burn violet. A card older than a day is just a quiet ember (no penalty, nothing is lost).
+  function flameOf(p) {
+    const t = p.card.today;
+    if (!t || !/^\d{4}-\d{2}-\d{2}$/.test(String(t.date)) || !Number.isFinite(t.cleared)) return null;
+    const age = p.demo ? 0 : dayDiff(t.date, todayISO());     // demo cards always count as today
+    if (age > 1 || age < -1) return null;
+    return { n: clamp(Math.floor(t.cleared), 0, 5), date: p.demo ? todayISO() : t.date };
+  }
+  function flameSetup() {
+    for (const p of S.people) { p.flame = flameOf(p); const left = p.cfg.side === 'left'; p.fx = left ? 118 : 362; p.fy = 254; }
+    const l = S.people.find(p => p.cfg.side === 'left'), r = S.people.find(p => p.cfg.side === 'right');
+    S.link = 0;
+    if (l && r && l.flame && r.flame && l.flame.date === r.flame.date && l.flame.n >= 3 && r.flame.n >= 3) S.link = (l.flame.n === 5 && r.flame.n === 5) ? 2 : 1;
+    S.linkEnds = (l && r) ? [l, r] : null;
+  }
+  function flameCol() { return S.link === 2 ? { a: '#9b6bff', b: '#d9c4ff', c: '#f3eaff', glow: '155,107,255' } : { a: '#e8561c', b: '#ffb347', c: '#fff1b8', glow: '255,160,60' }; }
+  function drawFlames(glowPass) {
+    const C = flameCol();
+    for (const p of S.people) {
+      const f = p.flame; if (!f) continue;
+      const x = p.fx, y = p.fy, n = f.n, fl = reduce ? 0 : Math.sin(S.t * 7 + p.ph * 3) * 0.6;
+      if (glowPass) {
+        const R = 14 + n * 6 + (S.link ? 8 : 0), g = ctx.createRadialGradient(x, y - 4, 1, x, y - 4, R); g.addColorStop(0, `rgba(${C.glow},${n === 0 ? 0.08 : 0.2 + n * 0.05})`); g.addColorStop(1, `rgba(${C.glow},0)`); ctx.fillStyle = g; ctx.fillRect(x - R, y - 4 - R, R * 2, R * 2);
+        continue;
+      }
+      ctx.fillStyle = 'rgba(0,0,0,0.35)'; ctx.fillRect(x - 9, y + 2, 18, 2);
+      if (p.card.sanctum === 'rooftop') {                                                            // diya: a little clay dish
+        ctx.fillStyle = '#6b3b2a'; ctx.fillRect(x - 6, y - 1, 12, 3); ctx.fillStyle = '#8a4e34'; ctx.fillRect(x - 5, y - 2, 10, 1); ctx.fillStyle = '#3a2418'; ctx.fillRect(x - 4, y + 2, 8, 1);
+      } else {                                                                                       // campfire: stone ring and two logs
+        ctx.fillStyle = '#8a8fa8'; for (const dx of [-8, -5, -2, 2, 5]) ctx.fillRect(x + dx, y + 1, 3, 2);
+        ctx.fillStyle = '#5a3a28'; ctx.fillRect(x - 6, y - 1, 12, 2); ctx.fillStyle = '#3e281c'; ctx.fillRect(x - 5, y - 3, 10, 2);
+      }
+      if (n === 0) { ctx.fillStyle = Math.sin(S.t * 2 + p.ph) > 0 ? '#ff7a3a' : '#a8441c'; ctx.fillRect(x - 1, y - 3, 2, 1); continue; }   // ember
+      const h = 3 + n * 2, w = 2 + Math.ceil(n * 0.9);
+      for (let i = 0; i < h; i++) {
+        const u = i / h, ww = Math.max(1, Math.round(w * (1 - u * 0.85))), sway = Math.round(fl * u * 1.5);
+        ctx.fillStyle = u < 0.35 ? C.c : u < 0.7 ? C.b : C.a; ctx.fillRect(x - Math.floor(ww / 2) + sway, y - 3 - i, ww, 1);
+      }
+      if (!reduce && n >= 3) for (let k = 0; k < n - 1; k++) { const t = (S.t * 0.7 + k * 0.37 + p.ph) % 1; ctx.globalAlpha = 1 - t; ctx.fillStyle = C.b; ctx.fillRect(Math.round(x + Math.sin(S.t * 2 + k * 2) * 5), Math.round(y - 6 - h - t * 14), 1, 1); ctx.globalAlpha = 1; }
+    }
+    if (S.link && S.linkEnds) {                                                                      // the trail of sparks between the two fires
+      const [a, b] = S.linkEnds, C2 = flameCol();
+      for (let i = 0; i < 22; i++) {
+        const u = ((i / 22) + (reduce ? 0 : S.t * 0.07)) % 1, x = a.fx + (b.fx - a.fx) * u, y = 262 + Math.sin(u * Math.PI * 3 + S.t * 1.5) * 2 - Math.sin(u * Math.PI) * 3;
+        if (glowPass) continue;
+        ctx.globalAlpha = 0.35 + 0.5 * Math.abs(Math.sin(S.t * 2 + i)); ctx.fillStyle = i % 3 ? C2.b : C2.c; ctx.fillRect(Math.round(x), Math.round(y), 1, 1);
+      }
+      ctx.globalAlpha = 1;
+    }
+  }
+
   // ---------- frame ----------
   function frame(ts) {
     requestAnimationFrame(frame);
@@ -290,8 +343,8 @@
     S.awake = awake(hl) && awake(hr);
     drawSeam(S.awake); drawBoard(S.hover === 'board');
     for (const p of S.people) { p.shadowBoxes = p.shadowBoxes || []; drawPerson(p); }
-    drawLanterns(false);
-    ctx.globalCompositeOperation = 'lighter'; drawLanterns(true); ctx.globalCompositeOperation = 'source-over';
+    drawFlames(false); drawLanterns(false);
+    ctx.globalCompositeOperation = 'lighter'; drawFlames(true); drawLanterns(true); ctx.globalCompositeOperation = 'source-over';
     // soft vignette
     const v = ctx.createRadialGradient(W / 2, H / 2, H * 0.5, W / 2, H / 2, W * 0.62); v.addColorStop(0, 'rgba(0,0,0,0)'); v.addColorStop(1, 'rgba(0,0,0,0.3)'); ctx.fillStyle = v; ctx.fillRect(0, 0, W, H);
     updateHud(left, right, hl, hr);
@@ -308,7 +361,7 @@
     if (left) parts.push(`${left.cfg.city} ${fmt(hl)}${wx(left)}`);
     if (right) parts.push(`${right.cfg.city} ${fmt(hr)}${wx(right)}`);
     const unread = (S.lanterns || []).filter(L => !readSet.has(L.id));
-    hud.textContent = parts.join('   ·   ') + (S.awake ? '   ·   you are both awake' : '') + (unread.length ? `   ·   ${unread.length} lantern${unread.length === 1 ? '' : 's'} unread` : '');
+    hud.textContent = parts.join('   ·   ') + (S.awake ? '   ·   you are both awake' : '') + (S.link === 2 ? '   ·   the flame burns violet' : S.link === 1 ? '   ·   your fires are linked' : '') + (unread.length ? `   ·   ${unread.length} lantern${unread.length === 1 ? '' : 's'} unread` : '');
     for (const p of S.people) {
       const b = p.bubble; if (!b) continue;
       b.style.left = (p.x / W * 100) + '%'; b.style.top = ((p.y - 36) / H * 100) + '%';
@@ -389,7 +442,7 @@
     let cfg; try { cfg = await loadJSON('config.json'); } catch { document.getElementById('hud').textContent = 'Could not load config.json'; return; }
     S.people = await loadPeople(cfg);
     if (!S.people.length) { document.getElementById('hud').textContent = 'No cards found yet.'; return; }
-    layoutPeople(); collectLanterns(); tickHours(); setInterval(tickHours, 20000);
+    layoutPeople(); collectLanterns(); flameSetup(); tickHours(); setInterval(tickHours, 20000);
     const stage = document.getElementById('stage');
     for (const p of S.people) { const b = el('div', 'bubble ' + p.cfg.side, ''); b.textContent = (p.card.now && p.card.now[0]) ? String(p.card.now[0]).slice(0, 56) : ''; stage.append(b); p.bubble = b; }
     if (S.people.some(p => p.demo)) document.getElementById('demo').hidden = false;

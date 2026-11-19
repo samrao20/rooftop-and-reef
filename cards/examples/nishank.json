@@ -27,14 +27,14 @@
     {
       "id": "walker",
       "name": "The Walker",
-      "glyph": "👣",
+      "glyph": "\ud83d\udc63",
       "tier": "Soldier",
       "days": 12
     },
     {
       "id": "reader",
       "name": "The Reader",
-      "glyph": "📖",
+      "glyph": "\ud83d\udcd6",
       "tier": "Soldier",
       "days": 10
     }
@@ -58,6 +58,11 @@
       "mind": 2,
       "social": 2
     }
+  },
+  "today": {
+    "date": "2026-11-19",
+    "cleared": 3,
+    "of": 5
   },
   "now": [
     "DEMO: testing an agent that drafts campaign captions"
