@@ -4,7 +4,7 @@ A tiny pixel hangout for two friends, a beach in Townsville and a rooftop in Mum
 
 Each of us runs a personal quest-and-habit system (the "Command Center"). Each one can produce a small, **allow-listed** card about its owner: rank, stats, shadows, this week's gate, a short "working on" note and a help board. This site reads both cards and draws the plaza where our two characters stand.
 
-> Status: just started. Nothing here is published to the web yet. The repo is private on purpose until we have both read exactly what our cards say.
+> Status: first slice built (the Seam, click-for-card, notice board, working on). It runs on two fake demo cards until real ones are added. Nothing here is published to the web yet. The repo is private on purpose until we have both read exactly what our cards say.
 
 ## How it works
 1. Each person's Command Center has a **Share** page that previews the exact card and saves it to a file, `card.json`. Nothing is sent anywhere by that page.
@@ -19,17 +19,21 @@ Each of us runs a personal quest-and-habit system (the "Command Center"). Each o
 
 ## Layout
 ```
-index.html          the plaza (coming next)
+index.html          the plaza page
+plaza.js / .css     the scene, the card panel and the notice board
+config.json         who is in the plaza, their city and timezone
 cards/              one card per person (cards/examples/ holds fake demo cards)
 docs/card-schema.md what a card contains
 IDEAS.md            quirky ideas we might build
 ```
 
-## Running it locally (once the plaza exists)
+## Running it locally
 ```bash
 python3 -m http.server 8080
 # then open http://localhost:8080
 ```
+Preview any time of day with `?samay=21.5&nishank=17` (hours in each person's own city) and force rain with `&rain=1`.
+Until `cards/samay.json` and `cards/nishank.json` exist, the plaza shows the fake cards in `cards/examples/` with a demo banner. The browser console will show two harmless 404s for the missing real cards.
 
 ## Publishing (later, deliberately)
 Settings → Pages → deploy from `main`. Pages on a private repo needs a paid GitHub plan; on a free plan the repo has to be public first. We decide that together, after reading the previews.

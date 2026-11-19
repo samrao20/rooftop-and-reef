@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Rooftop &amp; Reef</title>
+<link rel="stylesheet" href="plaza.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand"><span class="dot"></span>ROOFTOP <span class="amp">&amp;</span> REEF</div>
+  <div id="hud" class="hud" aria-live="polite">loading…</div>
+</header>
+
+<div id="demo" class="demo" hidden>Showing <b>demo cards</b> with made-up numbers. Real cards appear here once <code>cards/&lt;name&gt;.json</code> exist.</div>
+
+<main class="wrap">
+  <div class="stagewrap">
+    <div id="stage" class="stage">
+      <canvas id="plaza" width="480" height="270" aria-label="A plaza where a Townsville beach and a Mumbai rooftop meet. Click a character to see their card."></canvas>
+    </div>
+    <aside class="side"><div id="card" class="card" hidden></div></aside>
+  </div>
+  <p class="hint">Click a character or a shadow to read their card · click the notice board for the help board · each half follows its own city's real clock and weather</p>
+
+  <section class="cols">
+    <div id="board" class="box">
+      <h2>Notice board</h2>
+      <p class="sub">Things each of us would love a friend's eyes on.</p>
+      <ul id="board-list" class="rows"></ul>
+    </div>
+    <div class="box">
+      <h2>Working on this week</h2>
+      <p class="sub">Written by each person, for the other.</p>
+      <ul id="now-list" class="rows"></ul>
+    </div>
+  </section>
+
+  <footer class="foot">Cards only ever contain what each person chose to share. No money, health, people or logs. See <code>docs/card-schema.md</code>.</footer>
+</main>
+
+<script src="plaza.js"></script>
+</body>
+</html>

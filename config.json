@@ -1,0 +1,7 @@
+{
+  "title": "Rooftop & Reef",
+  "people": [
+    { "id": "samay", "card": "cards/samay.json", "demo": "cards/examples/samay.json", "city": "Townsville", "tz": "Australia/Brisbane", "lat": -19.259, "lon": 146.8169, "side": "left" },
+    { "id": "nishank", "card": "cards/nishank.json", "demo": "cards/examples/nishank.json", "city": "Mumbai", "tz": "Asia/Kolkata", "lat": 19.076, "lon": 72.8777, "side": "right" }
+  ]
+}
