@@ -88,5 +88,17 @@
       "to": "nishank",
       "text": "DEMO: saw a chai-stall photo today and thought of you"
     }
+  ],
+  "promises": [
+    {
+      "date": "2026-11-15",
+      "text": "DEMO: send the LinkedIn connection request",
+      "status": "done"
+    },
+    {
+      "date": "2026-11-22",
+      "text": "DEMO: finish the first methods section",
+      "status": "open"
+    }
   ]
 }

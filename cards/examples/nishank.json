@@ -85,5 +85,17 @@
       "to": "samay",
       "text": "DEMO: monsoon is loud tonight. How is the beach?"
     }
+  ],
+  "promises": [
+    {
+      "date": "2026-11-15",
+      "text": "DEMO: ship the caption agent to the team",
+      "status": "partly"
+    },
+    {
+      "date": "2026-11-22",
+      "text": "DEMO: set up a simple Obsidian vault",
+      "status": "open"
+    }
   ]
 }

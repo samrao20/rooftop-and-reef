@@ -417,6 +417,13 @@
     rows.sort((x, y) => String(y.a.date).localeCompare(String(x.a.date)));
     if (!rows.length) list.append(el('li', 'empty', 'Nothing on the board. Quiet is fine.'));
     for (const r of rows) { const li = el('li'); li.append(el('span', 'who ' + r.side, r.who), el('span', 'date', r.a.date), el('span', 'text', r.a.text)); list.append(li); }
+    const pl = document.getElementById('promise-list'); pl.replaceChildren();
+    const STAT = { open: 'this week', done: 'done', partly: 'partly done', 'life happened': 'life happened' };
+    for (const p of S.people) {
+      const ps = (Array.isArray(p.card.promises) ? p.card.promises : []).filter(x => x && typeof x.text === 'string').slice(-2).reverse();
+      if (!ps.length) { const li = el('li'); li.append(el('span', 'who ' + p.cfg.side, p.card.name), el('span', 'text', 'no promise this week')); pl.append(li); continue; }
+      for (const x of ps) { const li = el('li'); li.append(el('span', 'who ' + p.cfg.side, p.card.name), el('span', 'date', String(x.date).slice(0, 10)), el('span', 'pstat s-' + String(x.status).replace(/\W+/g, '-'), STAT[x.status] || 'this week'), el('span', 'text', String(x.text).slice(0, 140))); pl.append(li); }
+    }
     const now = document.getElementById('now-list'); now.replaceChildren();
     for (const p of S.people) { const li = el('li'); li.append(el('span', 'who ' + p.cfg.side, p.card.name)); li.append(el('span', 'text', (p.card.now || []).join(' · ') || 'nothing posted this week')); now.append(li); }
   }
